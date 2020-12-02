@@ -1,0 +1,67 @@
+@Library('UtilitiesCourse') _
+
+pipeline{
+    agent {
+        label 'worker_node_course'
+    }
+    
+    parameters{
+            booleanParam(defaultValue: false, description: '', name: 'deploy_artifact')
+            string(defaultValue: '', description: '', name: 'rama', trim: false)
+    }
+
+    stages{
+        stage('show-params'){
+            steps{
+                echo "RAMA: ${params.rama}"
+                echo "DEPLOY_ARTIFACT: ${params.deploy_artifact}"
+            }
+        }
+        stage('Clean'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage('Source'){
+            steps{
+                git branch: "${params.rama}", url: 'https://github.com/pealcuadrado/maven-training.git'
+            }
+        }
+        stage('Compile'){
+            steps{
+                mavenBuild "clean compile"
+            }
+        }
+        stage('Parallel Tests'){
+            parallel{
+                stage('Unit test'){
+                    steps{
+                        mavenBuild "test"
+                    }
+                }
+                stage('Integrated test'){
+                    steps{
+                        mavenBuild "verify"
+                    }
+                }
+            }
+        }
+        stage('Deployment'){
+            when{
+                expression {
+                    params.deploy_artifact == true
+                }
+            }
+            steps{
+                configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
+                    mavenBuild '-s $MAVEN_SETTINGS -DskipTests=True deploy'
+                }
+            }
+        }
+    }
+    post{
+        always {
+            junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
+        }
+    }
+}
