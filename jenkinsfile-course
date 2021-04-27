@@ -10,6 +10,47 @@ pipeline{
         cleanWs()
       }
    }
+   stage('Source'){
+    steps{
+        //Descargar codigo del repositorio Git
+        git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+      }
+    }
+   stage('Compile'){
+     steps{
+        //Ejecutar maven compile
+        mavenBuild "clean compile"
+     }
+   }
+   stage('Unit testing'){
+    steps{
+        //Ejecución de tests unitarios
+        try{
+            mavenBuild "test"
+        } catch(err) {
+            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+            throw err
+        }
+     }
+   }
+   stage('Integration test'){
+    steps{
+        //Ejecución tests integración
+        try{
+            mavenBuild "verify"
+        } finally {
+            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+        }
+      }
+    }
+    stage('Deploy'){
+      steps{
+        //Deploy to Artifactory
+        configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
+            mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
+        }
+      }
+    }
   }
 }
   
