@@ -35,18 +35,22 @@ pipeline{
         mavenBuild "clean compile"
      }
    }
-   stage('Unit testing'){
-    steps{
-        //Ejecución de tests unitarios
-        mavenBuild "test"
-     }
-   }
-   stage('Integration test'){
-    steps{
-        //Ejecución tests integración
-        mavenBuild "verify"
+   stage('Parallalel Tests'){
+    parallel{
+         stage('Unit testing'){
+          steps{
+            //Ejecución de tests unitarios
+            mavenBuild "test"
+          }
+         }
+         stage('Integration test'){
+          steps{
+            //Ejecución tests integración
+            mavenBuild "verify"
+          }
+        }
       }
-    }
+   }
     stage('Deploy'){
       when{
         expression{
