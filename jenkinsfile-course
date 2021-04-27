@@ -61,6 +61,11 @@ pipeline{
       }
     }
     stage('Deploy'){
+      when{
+        expression{
+          params.deploy_artifact == true
+        }
+      }
       steps{
         //Deploy to Artifactory
         configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
