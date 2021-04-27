@@ -12,8 +12,10 @@ pipeline{
    
   stages {
     stage('Print params'){
-      echo "RAMA: ${params.rama}"
-      echo "DEPLOY: ${params.deploy_artifact}"
+      steps{
+        echo "RAMA: ${params.rama}"
+        echo "DEPLOY: ${params.deploy_artifact}"
+      }
     }
     
     stage('Clean WS'){
