@@ -25,21 +25,25 @@ pipeline{
    stage('Unit testing'){
     steps{
         //Ejecución de tests unitarios
-        try{
-            mavenBuild "test"
-        } catch(err) {
-            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-            throw err
+        script{
+          try{
+              mavenBuild "test"
+          } catch(err) {
+              junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+              throw err
+          }
         }
      }
    }
    stage('Integration test'){
     steps{
         //Ejecución tests integración
-        try{
-            mavenBuild "verify"
-        } finally {
-            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+        script{
+          try{
+              mavenBuild "verify"
+          } finally {
+              junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+          }
         }
       }
     }
