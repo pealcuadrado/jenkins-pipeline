@@ -4,7 +4,18 @@ pipeline{
   agent {
     label 'worker_node_course'
    }
+   
+   parameters{
+    booleanParam(default: false, description: 'check para deploy', name: 'deploy_artifact')
+    string(defaultValue: '', description: 'Rama repo', name:'rama')
+   }
+   
   stages {
+    stage('Print params'){
+      echo "RAMA: ${params.rama}"
+      echo "DEPLOY: ${params.deploy_artifact}"
+    }
+    
     stage('Clean WS'){
       steps{
         cleanWs()
@@ -13,7 +24,7 @@ pipeline{
    stage('Source'){
     steps{
         //Descargar codigo del repositorio Git
-        git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+        git branch: "${params.rama}", url: 'https://github.com/pealcuadrado/maven-training.git'
       }
     }
    stage('Compile'){
