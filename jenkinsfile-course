@@ -1,1 +1,16 @@
+@Library('UtilitiesCourse') _
 
+pipeline{
+  agent {
+    label 'workder_node_course'
+   }
+  stages {
+    stage('Clean WS'){
+      steps{
+        cleanWs()
+      }
+   }
+  }
+}
+  
+    
