@@ -12,6 +12,9 @@ pipeline{
    
   stages {
     stage('Print params'){
+      agent{
+        'worker_node1'
+      }
       steps{
         echo "RAMA: ${params.rama}"
         echo "DEPLOY: ${params.deploy_artifact}"
