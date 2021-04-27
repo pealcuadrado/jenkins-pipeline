@@ -2,7 +2,7 @@
 
 pipeline{
   agent {
-    label 'workder_node_course'
+    label 'worker_node_course'
    }
   stages {
     stage('Clean WS'){
