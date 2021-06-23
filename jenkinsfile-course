@@ -43,7 +43,7 @@ pipeline{
         }
         stage('Integration Test'){
             steps{
-                executeIntegrationTest
+                executeIntegrationTest()
              }
         }
         stage('Deploy to Artifactory'){
