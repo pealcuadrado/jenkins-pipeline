@@ -34,7 +34,7 @@ pipeline{
         }
         stage('Download Source'){
             steps{
-                git branch: "{params.rama}", url: 'https://github.com/pealcuadrado/maven-training.git'
+                git branch: "${params.rama}", url: 'https://github.com/pealcuadrado/maven-training.git'
             }
         }
         stage('Compile'){
