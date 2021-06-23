@@ -15,7 +15,7 @@ pipeline{
     
     parameters{
         booleanParam(defaultValue: false, description: 'Deploy or not', name:'deploy_artifact')
-        string(default: '', description: 'repository branch', name: 'rama')
+        string(defaultValue: '', description: 'repository branch', name: 'rama')
     }
     
     stages{
