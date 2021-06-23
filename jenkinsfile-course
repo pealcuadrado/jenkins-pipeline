@@ -13,7 +13,20 @@ pipeline{
         label 'worker_node_course'
     }
     
+    parameters{
+        booleanParam(defaultValue: false, description: 'Deploy or not', name:'deploy_artifact')
+        string(default: '', description: 'repository branch', name: 'rama')
+    }
+    
     stages{
+    
+        stage('Print params'){
+            steps{
+                echo "RAMA: ${params.rama}"
+                echo "DEPLOY_ARTIFACT: ${params.deploy_artifact}"
+            }
+        }
+        
         stage('Clean WS'){
             steps{
                 cleanWs()
@@ -21,7 +34,7 @@ pipeline{
         }
         stage('Download Source'){
             steps{
-                git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+                git branch: "{params.rama}", url: 'https://github.com/pealcuadrado/maven-training.git'
             }
         }
         stage('Compile'){
@@ -47,6 +60,11 @@ pipeline{
              }
         }
         stage('Deploy to Artifactory'){
+            when{
+                expression {
+                    params.deploy_artifact == true
+                }
+            }
             steps{
                 configFileProvider([configFile(fileId: 'artifactory-publishing-setting', variable: 'MAVEN_SETTINGS')]) {
                     mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
