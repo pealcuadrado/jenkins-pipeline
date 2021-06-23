@@ -1,32 +1,48 @@
 @Library('UtilitiesCourse') _
-node('worker_node_course'){
-    stage('Clean WS'){
-        cleanWs()
+pipeline{
+    agent{
+        label 'worker_node_course'
     }
-    stage('Download Source'){
-        git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
-    }
-    stage('Compile'){
-        mavenBuild "clean compile"
-    }
-    stage('Unit test'){
-        try{
-            mavenBuild "test"
-        } catch(err) {
-            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-            throw err
+    
+    stages{
+        stage('Clean WS'){
+            cleanWs()
         }
-    }
-    stage('Integration Test'){
-        try{
-            mavenBuild "verify"
-        } finally {
-            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+        stage('Download Source'){
+            steps{
+                git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+            }
         }
-    }
-    stage('Deploy to Artifactory'){
-        configFileProvider([configFile(fileId: 'artifactory-publishing-setting', variable: 'MAVEN_SETTINGS')]) {
-            mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
+        stage('Compile'){
+            steps{
+                mavenBuild "clean compile"
+             }
+        }
+        stage('Unit test'){
+            steps{
+                try{
+                    mavenBuild "test"
+                } catch(err) {
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                    throw err
+                }
+             }
+        }
+        stage('Integration Test'){
+            steps{
+                try{
+                    mavenBuild "verify"
+                } finally {
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                }
+             }
+        }
+        stage('Deploy to Artifactory'){
+            steps{
+                configFileProvider([configFile(fileId: 'artifactory-publishing-setting', variable: 'MAVEN_SETTINGS')]) {
+                    mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
+                }
+            }
         }
     }
 }
