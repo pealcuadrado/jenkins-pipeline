@@ -44,6 +44,19 @@ pipeline{
                 mavenBuild "verify"
              }
         }
+        stage('Parallel verification'){
+            parallel{
+                stage('Verification 1'){
+                    sleep 30
+                }
+                stage('Verification 2'){
+                    sleep 120
+                }
+                stage('Verification 3'){
+                    sleep 60
+                }
+            }
+        }
         stage('Deploy to Artifactory'){
             when{
                 expression {
