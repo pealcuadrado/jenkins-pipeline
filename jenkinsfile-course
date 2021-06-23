@@ -1,4 +1,13 @@
 @Library('UtilitiesCourse') _
+
+def executeIntegrationTest(){
+    try{
+        mavenBuild "verify"
+    } finally {
+        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+    }
+}
+
 pipeline{
     agent{
         label 'worker_node_course'
@@ -22,21 +31,19 @@ pipeline{
         }
         stage('Unit test'){
             steps{
-                try{
-                    mavenBuild "test"
-                } catch(err) {
-                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                    throw err
+                script{
+                    try{
+                        mavenBuild "test"
+                    } catch(err) {
+                        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                        throw err
+                    }
                 }
              }
         }
         stage('Integration Test'){
             steps{
-                try{
-                    mavenBuild "verify"
-                } finally {
-                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                }
+                executeIntegrationTest
              }
         }
         stage('Deploy to Artifactory'){
