@@ -6,7 +6,9 @@ pipeline{
     
     stages{
         stage('Clean WS'){
-            cleanWs()
+            steps{
+                cleanWs()
+            }
         }
         stage('Download Source'){
             steps{
