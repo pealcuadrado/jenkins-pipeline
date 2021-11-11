@@ -36,6 +36,9 @@ pipeline{
                 mavenBuild "clean compile"
             }
         }
+        stage("sleep"){
+            sleep 300
+        }
         stage("Parallel tests"){
             parallel{
                 stage("Unit Test"){
