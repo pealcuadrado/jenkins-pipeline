@@ -10,10 +10,6 @@ pipeline{
         booleanParam(name:'deploy_artifact', description: 'realizar deploy o no', defaultValue: false)
     }
     
-    options{
-        timeout(time: new RandomTimeoutGen().getRandomTimeout([limite: 30]), unit: 'SECONDS')
-    }
-    
     stages{
         stage("clean-ws"){
             steps{
@@ -38,7 +34,10 @@ pipeline{
         }
         stage("sleep"){
             steps {
-                sleep 300
+                script{
+                    def sleepTime= new RandomTimeoutGen().getRandomTimeout 30
+                    echo "${sleepTime}"
+                    sleep sleepTime
              }
         }
         stage("Parallel tests"){
