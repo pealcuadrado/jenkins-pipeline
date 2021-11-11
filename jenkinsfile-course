@@ -4,10 +4,22 @@ pipeline{
     agent{
         label 'worker_node_course'
     }
+    
+    parameters{
+        string(name:'rama', description: 'Rama a usar', defaultValue: '')
+        booleanParam(name:'deploy_artifact', description: 'realizar deploy o no', default_value: false)
+    }
+    
     stages{
         stage("clean-ws"){
             steps{
                 cleanWs()
+            }
+        }
+        stage("print params"){
+            steps{
+                echo "RAMA: ${params.rama}"
+                echo "DEPLOY_ARTIFACT: ${params.deploy_artifact}"
             }
         }
         stage("Source"){
