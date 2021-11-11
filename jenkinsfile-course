@@ -38,6 +38,7 @@ pipeline{
                     def sleepTime= new RandomTimeoutGen().getRandomTimeout 30
                     echo "${sleepTime}"
                     sleep sleepTime
+                 }
              }
         }
         stage("Parallel tests"){
