@@ -32,7 +32,7 @@ pipeline{
                 mavenBuild "clean compile"
             }
         }
-        stage("Parallel tests){
+        stage("Parallel tests"){
             parallel{
                 stage("Unit Test"){
                     steps{
