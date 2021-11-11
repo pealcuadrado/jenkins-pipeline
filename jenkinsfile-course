@@ -37,7 +37,9 @@ pipeline{
             }
         }
         stage("sleep"){
-            sleep 300
+            steps {
+                sleep 300
+             }
         }
         stage("Parallel tests"){
             parallel{
