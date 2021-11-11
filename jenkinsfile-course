@@ -1,4 +1,4 @@
-@Library('UtilitiesCourse') _
+@Library('UtilitiesCourse') import RandomTimeoutGen
 
 pipeline{
     agent{
@@ -11,7 +11,7 @@ pipeline{
     }
     
     options{
-        timeout(time: 2, unit: 'MINUTES')
+        timeout(time: new RandomTimeoutGen().getRandomTimeout 30, unit: 'SECONDS')
     }
     
     stages{
