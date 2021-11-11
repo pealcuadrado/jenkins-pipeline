@@ -22,18 +22,12 @@ pipeline{
         }
         stage("Unit Test"){
             steps{
-                executeUnitTests()
+                mavenBuild "test"
             }
         }
         stage("Integration Test"){
             steps{
-                script{
-                    try{
-                        mavenBuild "verify"
-                    } finally{
-                        junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
-                    }
-                }
+                 mavenBuild "verify"
             }
         }
         stage("Deploy"){
@@ -44,13 +38,9 @@ pipeline{
             }
         }
     }
-}
-
-def executeUnitTests(){
-    try{
-        mavenBuild "test"
-    }catch(err){
-        junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
-        throw err
+    post{
+        always{
+            junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
+        }
     }
 }
