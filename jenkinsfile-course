@@ -11,7 +11,7 @@ pipeline{
     }
     
     options{
-        timeout(time: new RandomTimeoutGen().getRandomTimeout 30, unit: 'SECONDS')
+        timeout(time: new RandomTimeoutGen().getRandomTimeout([limite: 30]), unit: 'SECONDS')
     }
     
     stages{
