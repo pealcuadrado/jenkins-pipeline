@@ -22,14 +22,7 @@ pipeline{
         }
         stage("Unit Test"){
             steps{
-                script{
-                    try{
-                        mavenBuild "test"
-                    }catch(err){
-                        junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
-                        throw err
-                    }
-                }
+                executeUnitTests()
             }
         }
         stage("Integration Test"){
@@ -50,5 +43,14 @@ pipeline{
                  }
             }
         }
+    }
+}
+
+def executeUnitTests(){
+    try{
+        mavenBuild "test"
+    }catch(err){
+        junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
+        throw err
     }
 }
