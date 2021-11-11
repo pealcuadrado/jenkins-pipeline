@@ -32,14 +32,18 @@ pipeline{
                 mavenBuild "clean compile"
             }
         }
-        stage("Unit Test"){
-            steps{
-                mavenBuild "test"
-            }
-        }
-        stage("Integration Test"){
-            steps{
-                 mavenBuild "verify"
+        stage("Parallel tests){
+            parallel{
+                stage("Unit Test"){
+                    steps{
+                        mavenBuild "test"
+                    }
+                }
+                stage("Integration Test"){
+                    steps{
+                         mavenBuild "verify"
+                    }
+                }
             }
         }
         stage("Deploy"){
