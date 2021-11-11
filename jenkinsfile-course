@@ -6,7 +6,7 @@ pipeline{
     }
     
     parameters{
-        string(name:'rama', description: 'Rama a usar', defaultValue: '')
+        string(name:'rama', description: 'Rama a usar', defaultValue: 'develop')
         booleanParam(name:'deploy_artifact', description: 'realizar deploy o no', defaultValue: false)
     }
     
