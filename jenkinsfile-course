@@ -1,0 +1,32 @@
+@Library('UtilitiesCourse') _
+node('worker_node_course'){
+    stage("clean-ws"){
+        cleanWs()
+    }
+    stage("Source"){
+        git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+    }
+    stage("Compile"){
+        mavenBuild "clean compile"
+    }
+    stage("Unit Test"){
+        try{
+            mavenBuild "test"
+        }catch(err){
+            junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
+            throw err
+        }
+    }
+    stage("Integration Test"){
+        try{
+            mavenBuild "verify"
+        } finally{
+            junit allowEmptyResults: true, testResults: '**/target/*-reports/TEST-*.xml'
+        }
+    }
+    stage("Deploy"){
+        configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
+            mavenBuild '-s $MAVEN_SETTINGS -DskiptTests=true deploy'
+        }
+    }
+}
