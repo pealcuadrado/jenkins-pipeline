@@ -2,7 +2,7 @@
 
 pipeline{
     agent{
-        label 'worker_node_course'
+        label 'worker_node_1'
     }
     
     parameters{
