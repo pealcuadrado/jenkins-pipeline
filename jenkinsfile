@@ -1,8 +1,8 @@
-@Library('UtilitiesCourse') _
+@Library('Utilities2') _
 
 pipeline{
     agent {
-        label 'worker_node_course'
+        label 'worker_node1'
     }
     
     parameters{
