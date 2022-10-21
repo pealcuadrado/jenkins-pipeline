@@ -1,4 +1,4 @@
-@Library('UtilitiesCourse') import RandomTimeoutGen
+@Library('Utilities2')_
 
 pipeline{
     agent{
