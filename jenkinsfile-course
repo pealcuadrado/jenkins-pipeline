@@ -35,7 +35,7 @@ pipeline{
         stage("sleep"){
             steps {
                 script{
-                    def sleepTime= new RandomTimeoutGen().getRandomTimeout 30
+                    def sleepTime= 30
                     echo "${sleepTime}"
                     sleep sleepTime
                  }
