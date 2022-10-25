@@ -40,10 +40,10 @@ pipeline{
             steps{
                 mavenBuild "test"
             }
-        }
-        post{
-            failure{
-                junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+            post{
+                failure{
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                }
             }
         }
         
@@ -51,12 +51,13 @@ pipeline{
             steps{
                 mavenBuild "verify"
             }
-        }
-        post{
-            always {
-                junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+            post{
+                always {
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                }
             }
         }
+
         
         stage('Deploy'){
             when{
