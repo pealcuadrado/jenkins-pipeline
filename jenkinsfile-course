@@ -10,7 +10,7 @@ pipeline{
     }
 
     options{
-        timeout(time: 10, unit: 'SECONDS')
+        timeout(time: 10, unit: 'MINUTES')
     }
 
     stages{
@@ -43,6 +43,7 @@ pipeline{
         stage('Unit test'){
             steps{
                 mavenBuild "test"
+                sleep 60
             }
             post{
                 failure{
@@ -54,6 +55,7 @@ pipeline{
         stage('Integration Test'){
             steps{
                 mavenBuild "verify"
+                sleep 60
             }
             post{
                 always {
