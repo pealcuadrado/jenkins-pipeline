@@ -26,7 +26,7 @@ pipeline{
         
         stage('Source'){
             steps{
-                git branch: 'develop', changelog: false, poll: false, url: 'https://github.com/pealcuadrado/maven-training'
+                git branch: "${params.rama}", changelog: false, poll: false, url: 'https://github.com/pealcuadrado/maven-training'
             }
         }
         
@@ -62,6 +62,11 @@ pipeline{
         }
         
         stage('Deploy'){
+            when{
+                expression {
+                    params.deploy_artifact == true
+                }
+            }
             steps{
                 configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
                     echo '$MAVEN_SETTINGS'
