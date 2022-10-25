@@ -9,6 +9,10 @@ pipeline{
         string(defaultValue: '', description: 'Branch para hacer Build', name: 'rama')
     }
 
+    options{
+        timeout(time: 10, unit: 'SECONDS')
+    }
+
     stages{
 
         stage('Show Params'){
