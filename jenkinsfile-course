@@ -12,8 +12,10 @@ pipeline{
     stages{
 
         stage('Show Params'){
-            echo "BRANCH: ${params.rama}"
-            echo "DEPLOY: ${params.deploy_artifact}"
+            steps{
+                echo "BRANCH: ${params.rama}"
+                echo "DEPLOY: ${params.deploy_artifact}"
+            }
         }
 
         stage('Clean workspace'){
