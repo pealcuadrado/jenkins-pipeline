@@ -38,26 +38,23 @@ pipeline{
         
         stage('Unit test'){
             steps{
-                script{
-                    try{
-                        mavenBuild "test"
-                    } catch(err){
-                        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                        throw err
-                    }
-                }
+                mavenBuild "test"
+            }
+        }
+        post{
+            failure{
+                junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
             }
         }
         
         stage('Integration Test'){
             steps{
-                script{
-                    try{
-                        mavenBuild "verify"
-                    } finally{
-                        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                    }
-                }
+                mavenBuild "verify"
+            }
+        }
+        post{
+            always {
+                junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
             }
         }
         
