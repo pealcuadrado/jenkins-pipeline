@@ -47,11 +47,6 @@ pipeline{
                         mavenBuild "test"
                         sleep 60
                     }
-                    post{
-                        failure{
-                            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                        }
-                    }
                 }
         
                 stage('Integration Test'){
@@ -59,11 +54,11 @@ pipeline{
                         mavenBuild "verify"
                         sleep 60
                     }
-                    post{
-                        always {
-                            junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                        }
-                    }
+                }
+            }
+            post{
+                always {
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
                 }
             }
         }
