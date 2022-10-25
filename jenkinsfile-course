@@ -4,7 +4,18 @@ pipeline{
         label 'worker_node_course'
     }
 
+    parameters{
+        booleanParam(defaultValue: false, description: 'Hacer deploy o no', name: 'deploy_artifact')
+        string(defaultValue: '', description: 'Branch para hacer Build', name: 'rama')
+    }
+
     stages{
+
+        stage('Show Params'){
+            echo "BRANCH: ${params.rama}"
+            echo "DEPLOY: ${params.deploy_artifact}"
+        }
+
         stage('Clean workspace'){
             steps{
                 cleanWs()
@@ -38,7 +49,13 @@ pipeline{
         
         stage('Integration Test'){
             steps{
-                mavenVerify()
+                script{
+                    try{
+                        mavenBuild "verify"
+                    } finally{
+                        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                    }
+                }
             }
         }
         
@@ -52,12 +69,4 @@ pipeline{
         }
     }
     
-}
-
-def mavenVerify(){
-    try{
-        mavenBuild "verify"
-    } finally{
-        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-    }
 }
