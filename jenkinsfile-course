@@ -25,22 +25,20 @@ pipeline{
         
         stage('Unit test'){
             steps{
-                try{
-                    mavenBuild "test"
-                } catch(err){
-                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                    throw err
+                script{
+                    try{
+                        mavenBuild "test"
+                    } catch(err){
+                        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                        throw err
+                    }
                 }
             }
         }
         
         stage('Integration Test'){
             steps{
-                try{
-                    mavenBuild "verify"
-                } finally{
-                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
-                }
+                mavenVerify()
             }
         }
         
@@ -54,5 +52,12 @@ pipeline{
         }
     }
     
+}
 
+def mavenVerify(){
+    try{
+        mavenBuild "verify"
+    } finally{
+        junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+    }
 }
