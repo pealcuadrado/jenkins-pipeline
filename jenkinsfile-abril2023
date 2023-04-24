@@ -41,6 +41,7 @@ pipeline{
         }
         stage('deploy'){
             steps{
+                sleep 60
                 configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
                     mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
                 }  
