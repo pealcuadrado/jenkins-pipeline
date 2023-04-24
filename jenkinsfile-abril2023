@@ -2,7 +2,7 @@
 pipeline{
     agent { label 'worker_node1' }
     
-    paremeters{
+    parameters{
         booleanParam(defaultValue: false, description: 'Ejecutar deploy o no', name: 'deploy_artifact')
         string(defaultValue: '', description: 'Nombre de la rama para build', name: 'rama')
     }
