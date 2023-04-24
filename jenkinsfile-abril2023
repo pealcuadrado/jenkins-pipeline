@@ -2,12 +2,22 @@
 pipeline{
     agent { label 'worker_node1' }
     
+    paremeters{
+        booleanParam(defaultValue: false, description: 'Ejecutar deploy o no', name: 'deploy_artifact')
+        string(defaultValue: '', description: 'Nombre de la rama para build' name: 'rama)
+    }
     
     options{
         timeout(time: 2, unit: 'MINUTES')
     }
     
     stages {
+        stage('Init pipeline') {
+            cleanWs()
+            echo "BRANCH: ${params.rama}"
+            echo "DEPLOY: ${params.deploy_artifact}"
+        }
+        
         stage('Source') {
             steps{
                 // Get code from our git repository
@@ -41,7 +51,6 @@ pipeline{
         }
         stage('deploy'){
             steps{
-                sleep 60
                 configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
                     mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
                 }  
