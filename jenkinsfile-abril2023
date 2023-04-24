@@ -1,6 +1,12 @@
 @Library('Utilities2') _
 pipeline{
     agent { label 'worker_node1' }
+    
+    
+    options{
+        timeout(time: 2, unit: 'MINUTES')
+    }
+    
     stages {
         stage('Source') {
             steps{
