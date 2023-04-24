@@ -13,9 +13,11 @@ pipeline{
     
     stages {
         stage('Init pipeline') {
-            cleanWs()
-            echo "BRANCH: ${params.rama}"
-            echo "DEPLOY: ${params.deploy_artifact}"
+            steps{
+                cleanWs()
+                echo "BRANCH: ${params.rama}"
+                echo "DEPLOY: ${params.deploy_artifact}"
+            }
         }
         
         stage('Source') {
