@@ -1,0 +1,44 @@
+@Library('Utilities2') _
+pipeline{
+    agent { 'worker_node1' }
+    stages {
+        stage('Source') {
+            steps{
+                // Get code from our git repository
+                git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+            }
+        }
+        stage('Compile') {
+            steps{
+                // Run Maven to execute compile 
+                mavenBuild "clean compile"
+            }
+        }
+        stage('Unit test'){
+            steps{
+                try{
+                    mavenBuild "test"
+                } catch(err) {
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                    throw err
+                }
+            }
+        }
+        stage('Integration Test'){
+            steps{
+                try{
+                    mavenBuild "verify"
+                } finally {
+                    junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
+                }
+            }
+        }
+        stage('deploy'){
+            steps{
+                configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
+                    mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
+                }  
+            }     
+        }
+    }
+}
