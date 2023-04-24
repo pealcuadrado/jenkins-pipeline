@@ -1,6 +1,6 @@
 @Library('Utilities2') _
 pipeline{
-    agent { 'worker_node1' }
+    agent { label 'worker_node1' }
     stages {
         stage('Source') {
             steps{
