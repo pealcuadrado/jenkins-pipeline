@@ -23,7 +23,7 @@ pipeline{
         stage('Source') {
             steps{
                 // Get code from our git repository
-                git branch: 'develop', url: 'https://github.com/pealcuadrado/maven-training.git'
+                git branch: "${params.rama}", url: 'https://github.com/pealcuadrado/maven-training.git'
             }
         }
         stage('Compile') {
@@ -52,6 +52,11 @@ pipeline{
            }
         }
         stage('deploy'){
+            when{
+                expression{
+                    deploy_artifacts == true
+                }
+            }
             steps{
                 configFileProvider([configFile(fileId: 'artifactory-publishing-settings', variable: 'MAVEN_SETTINGS')]) {
                     mavenBuild '-s $MAVEN_SETTINGS -DskipTests=true deploy'
