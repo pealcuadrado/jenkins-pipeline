@@ -14,20 +14,24 @@ pipeline{
                 mavenBuild "clean compile"
             }
         }
-        stage('Unit test'){
-            steps{
-                mavenBuild "test"
-            }
-        }
-        stage('Integration Test'){
-            steps{
-                mavenBuild "verify"
+        stage('parallel tests'){
+            parallel{
+                stage('Unit test'){
+                    steps{
+                        mavenBuild "test"
+                    }
+                }
+                stage('Integration Test'){
+                    steps{
+                        mavenBuild "verify"
+                    }
+                }
             }
             post{
                 always{
                     junit allowEmptyResults: true, healthScaleFactor: 0.0, testResults: '**/target/*-reports/TEST-*.xml'
                 }
-            }
+           }
         }
         stage('deploy'){
             steps{
