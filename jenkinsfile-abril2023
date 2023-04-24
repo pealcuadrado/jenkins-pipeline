@@ -4,7 +4,7 @@ pipeline{
     
     paremeters{
         booleanParam(defaultValue: false, description: 'Ejecutar deploy o no', name: 'deploy_artifact')
-        string(defaultValue: '', description: 'Nombre de la rama para build' name: 'rama)
+        string(defaultValue: '', description: 'Nombre de la rama para build', name: 'rama)
     }
     
     options{
